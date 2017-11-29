@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href=".\public\css\styles.css">
+    <script type="text/javascript">
+        function draw() {
+            function resizeCanvas() {
+                // Copy canvas as image data
+                // let imgData = ctx.getImageData(0,0, canvas.width, canvas.height);
+                let elem = document.getElementById('canvas1');
+                console.log(window.innerWidth);
+                if(window.innerWidth < 768){
+                    console.log(elem.width);
+                    elem.width = window.innerWidth;
+                }else{
+                    elem.width = 768;
+                }
+                if(window.innerHeight < 1366){
+                    elem.height = window.innerHeight;
+                }else{
+                    elem.height = 1366;
+                }
+                // Copy back to resized canvas
+                // ctx.putImageData(imgData, 0, 0);
+                drawCanvas();
+            }
+            const canvas = document.getElementById('canvas1');
+            if (canvas.getContext) {
+                var ctx = canvas.getContext('2d'); // ask codesmith about this var vs let & how to deal w scope
+                window.addEventListener('resize', resizeCanvas, false);
+                window.addEventListener('orientationchange', resizeCanvas, false);
+                resizeCanvas();
+            }
+
+            function drawCanvas(){
+                const border = 10;
+                fullWidth = canvas.width-(border*2);
+                let xA = Math.floor(canvas.width / 2); // 1/2 width
+                let xB = Math.floor((canvas.width / 3)*2); // 2/3rds width
+                let xC = Math.floor(canvas.width / 3); // 1/3rd width
+                let yA = Math.floor(((canvas.height / 3)*2)*.125);
+                let yBC = Math.floor(((canvas.height / 3)*2)*.875);
+                let yBCa = Math.floor(yBC*.125);
+                let yD = Math.floor((canvas.height / 3)*.2);
+                let yE = Math.floor((canvas.height / 3)*.8);
+                // ctx.font = '48px serif';
+                // ctx.textAlign = 'center';
+                // ctx.fillText('Current Context', xA, 50);
+                ctx.strokeRect(border, border, fullWidth, yA-border); // A title rect
+                ctx.fillRect(border, border+yA, xB, yBC-border); // B execution context rect
+                ctx.fillStyle = 'orange';
+                ctx.fillRect(border+xB, border+yA, xC-(border*2), yBC-border); // C local memory rect
+                ctx.fillStyle = 'red';
+                ctx.fillRect(border, border+yA+yBC, fullWidth, yD-border); // D output rect
+                ctx.fillStyle = 'grey';
+                ctx.fillRect(border, border+yA+yBC+yD, fullWidth, yE-(border*2)); // E callstack rect
+            }
+        }
+    </script>
+    <style type="text/css">
+      canvas { border: 1px solid black; }
+    </style>
+</head>
+<body onload="draw();">
+    <canvas class="executionContext" id='canvas1' width="768" height="1366"></canvas>
+</body>
+</html>
